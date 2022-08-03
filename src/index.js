@@ -45,6 +45,24 @@ app.get('/api/persons', (request, response) => {
 app.post('/api/persons', (request, response) => {
     const {name, number} = request.body
 
+    if (!name) {
+      return response.status(400).json({ 
+        error: 'name missing' 
+      })
+    }
+
+    if (!number) {
+      return response.status(400).json({ 
+        error: 'number missing' 
+      })
+    }
+
+    if (persons.findIndex(person => person.name.toLowerCase() === name.toLowerCase()) !== -1) {
+      return response.status(400).json({ 
+        error: 'name must be unique' 
+      })
+    }
+
     const generateId = () => {
         const maxId = persons.length > 0
           ? Math.max(...persons.map(person => person.id))
