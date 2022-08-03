@@ -1,9 +1,14 @@
 const express = require('express')
+const morgan = require('morgan')
 
 const app = express()
 
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
+morgan.token('payload', function(req, res){
+  return (req.method === 'POST' ? JSON.stringify(req.body) : '')
+})
 
 let persons = [
     { 
@@ -27,6 +32,8 @@ let persons = [
         "number": "39-23-6423122"
       }
 ]
+
+app.use(morgan(':method :url :res[content-length] - :response-time ms :payload'))
 
 app.get('/', (request, response) => {
     response.send('Hello World!')
