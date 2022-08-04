@@ -1,8 +1,10 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 
 const app = express()
 
+app.use(cors())
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
@@ -101,8 +103,7 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
-let port = 3001
-
-app.listen(port, function () {
-    console.log('App listening on port ' + port + '!');
-  });
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
