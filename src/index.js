@@ -49,34 +49,29 @@ app.post('/api/persons', (request, response) => {
       })
     }
 
-    if (persons.findIndex(person => person.name.toLowerCase() === name.toLowerCase()) !== -1) {
-      return response.status(400).json({ 
-        error: 'name must be unique' 
-      })
-    }
+    // if (persons.findIndex(person => person.name.toLowerCase() === name.toLowerCase()) !== -1) {
+    //   return response.status(400).json({ 
+    //     error: 'name must be unique' 
+    //   })
+    // }
 
-    const generateId = () => {
-        const maxId = persons.length > 0
-          ? Math.max(...persons.map(person => person.id))
-          : 0
-        return maxId + 1
-    }
-
-    const person = {
-        id: generateId(),
+    const person = new Person({
         name: name,
         number: number,
-    }
+    })
 
-    persons.push(person)
-    response.json(person)
+    person.save().then(savedPerson => {
+      response.json(savedPerson)
+    })
+    
 
 })
 
 app.get('/api/persons/:id', (request, response) => {
     const {id} = request.params
-    const person = persons.filter(person => person.id !== Number(id))
-    return response.json(person)
+    Person.findById(id).then(person => {
+      response.json(person)
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
